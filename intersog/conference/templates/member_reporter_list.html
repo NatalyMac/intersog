@@ -1,0 +1,19 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h2>Все докладчики</h2>
+</div>
+
+<div>
+<ul>
+{% for member in members %}
+<li> <a title="Просмотреть" href= {% url "conf:member_view" member.id %}>{{member.member.first_name}} -- {{member.role}}</a></li> 
+{% endfor %}
+</ul>
+</div>
+
+<div>
+<a  href= {% url 'home' %}> Назад </a>
+</div>
+{% include 'paginator.html' %} 
+{% endblock content %} 

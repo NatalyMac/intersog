@@ -1,0 +1,15 @@
+{% extends "base.html" %}  
+{% block content %} 
+
+
+<form action="" method="post">
+   
+    {% csrf_token %}
+   
+    {{ form.as_p }} 
+
+<input type="hidden" name="reprs" value = "{{member.member.id}}">
+<input type="submit" value="Отправить">
+</form>
+</div>
+{% endblock content %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}  
+{% load static from staticfiles %}  
+{% block content %} 
+<div>
+<h3>Профиль пользователя</h3>
+</div>
+<div>
+
+
+{% if user.photo %}
+<img class="img-circle" width=40 height=40 src= {{ user.photo.url }} >
+        
+{% else %}
+
+<img class="img-circle" src= {% static 'img/cat.png' %} height=40 width=40 />
+         
+{% endif %}                            
+
+
+<p>{{ user.first_name }} {{ user.last_name }}</p>
+</div>
+
+
+<div>
+<p> Я представитель таких компаний</p>
+
+{%for repr in reprs%}
+<img class="img-circle" width=40 height=40 src= {{ repr.photo.url }} >
+{%endfor%}
+</div>
+
+
+<div>
+<a  href= {% url "user:user_edit" user.id %}> Редактировать </a></li>
+</div>
+
+<form action="{% url "user:user_delete" user.id %}" method="post">
+    {% csrf_token %}
+<input type="submit" value="удалить">
+</form>
+
+<div>
+<a  href= {% url 'home' %}> Назад </a></li>
+</div>
+{% endblock content %} 

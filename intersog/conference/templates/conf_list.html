@@ -1,0 +1,23 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h2>Конференции</h2>
+</div>
+<div>
+
+<ul>
+
+{% for conference in conferences %}
+<li> <a title="Просмотреть" href= {% url "conf:conf_view" conference.id %}>{{conference.name}} , {{conference.place}}</a></li>
+{% endfor %}
+
+</ul>
+
+</div>
+<div>
+<a href = {% url 'conf:conf_add' %}> Добавить конференцию</a>
+</div>
+
+<a  href= {% url 'home' %}> Назад </a>
+{% include 'paginator.html' %} 
+{% endblock content %} 

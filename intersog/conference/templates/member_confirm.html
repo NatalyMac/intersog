@@ -1,0 +1,15 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<div><p>Успешно зарегистрированы </p></div>
+<div><p> в качестве:  {{role}}</p></div>
+</div>
+
+<p> на конференцию</p>
+<p>{{ conference.name }}</p>
+<p>{{ conference.place}}</p>
+<p>{{ conference.date_begin }}</p>
+<p>{{ conference.date_end }}</p>
+
+<a  href= {% url 'conf:conf' %}> Назад </a></li>
+{% endblock content %} 

@@ -1,0 +1,17 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h3> Добавим конференцию</h3>
+</div>
+<div>
+<form action="" method="post">
+    {% csrf_token %}
+   
+    {{ form.as_p }} 
+
+<input type="submit" value="Добавить">
+</form>
+</div>
+<div>
+<a  href= {% url 'conf:conf' %}> Назад </a></li>
+</{% endblock content %} 

@@ -1,0 +1,20 @@
+{% extends "base.html" %}  
+{% block content %} 
+
+<div>
+<h2>мой чат</h2>
+</div>
+
+<div>
+<ul>
+{% for chat in chats %}
+<li>{{chat.text}}</a></li> 
+{% endfor %}
+</ul>
+</div>
+
+<div>
+<a  href= {% url 'home' %}> Назад </a>
+</div>
+{% include 'paginator.html' %} 
+{% endblock content %} 

@@ -1,0 +1,37 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h3>Конференция</h3>
+</div>
+
+<div>
+<a  href= {% url "conf:conf_sponsor_list" conference.id%}> Спонсоры </a></li>
+<a  href= {% url "conf:conf_reporter_list" conference.id%}> Докладчики </a></li>
+<a  href= {% url "conf:conf_member_list" conference.id%}> Участники </a></li>
+</div>
+
+<div>
+<p>{{ conference.name }}</p>
+<p>{{ conference.place}}</p>
+<p>{{ conference.theme}}</p>
+<p>{{ conference.date_begin}}</p>
+<p>{{ conference.date_end}}</p>
+</div>
+
+<div>
+<a  href= {% url "conf:conf_edit" conference.id %}> Редактировать </a></li>
+</div>
+
+<form action="{% url "conf:conf_delete" conference.id %}" method="post">
+    {% csrf_token %}
+<input type="submit" value="удалить">
+</form>
+
+<div>
+<a  href= {% url 'conf:member' conference.id %}>Зарегистрироваться</a></li>
+</div>
+  
+<div>
+<a  href= {% url 'conf:conf' %}> Назад </a></li>
+</div>
+{% endblock content %} 

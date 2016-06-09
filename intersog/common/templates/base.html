@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> Что то </title>
+<meta name="description" value="Конференции"/>
+<meta charset="utf-8"/>    
+</head>
+
+<body>    
+<div> 
+<h3> Конференции и общение</h3>
+
+<a href = {% url "conf:conf" %}> Конференции</a>
+<a href = {% url "conf:conf_arhiv" %}> Архив конференций</a>
+<a href = {% url "blog:news" %}> Новости</a>
+
+<a href = {% url "conf:member_list" %}> Участники</a>
+<a href = {% url "conf:member_reporter_list" %}> Докладчики</a>
+<a href = {% url "conf:reprs" %}> Представители</a>
+<a href = {% url "user:user" %}> Пользователи</a>
+</div>
+
+{%if user.is_authenticated%}
+<div>
+<div><a href = {% url "user:profile_view"%}>Мой профиль {{profile}}</a></div>
+<a href = {% url "auth:auth_logout" %}> Выйти</a>
+</div>
+{%else%}
+<div>
+ <div><a href = {% url "auth:auth_login" %}> Войти</a></div>
+<div><a href = {% url "auth:registration_register" %}> Зарегистрироваться</a></div>
+</div>
+{%endif%}
+
+
+{% block content %} {% endblock content %}                        
+
+
+
+</body>
+</html> 

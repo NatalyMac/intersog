@@ -1,0 +1,24 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h2>Мои представители</h2>
+</div>
+
+<div>
+<ul>
+{% for representer in representers %}
+<li> <a title="Просмотреть" href= {% url "user:user_view" representer.representer.id %}>
+    <img class="img-circle" width=40 height=40 src= {{ representer.representer.photo.url }}>
+    {{representer.representer.first_name}} -- {{representer.representer.occupation}}
+</a></li> 
+ 
+{% endfor %}
+</ul>
+</div>
+
+<div>
+<a  href= {% url 'home' %}> Назад </a>
+</div>
+{% include 'paginator.html' %} 
+{% endblock content %} 
+
