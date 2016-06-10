@@ -1,5 +1,5 @@
 # coding: utf-8
-from django.core.paginator          import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.mixins     import LoginRequiredMixin
 from django.views.generic.edit      import CreateView, UpdateView, DeleteView
 from django.views.generic           import ListView
 from django.shortcuts               import redirect
@@ -12,12 +12,13 @@ from common.my_paginator import my_pages
 
 
 
-class ChatCreate(CreateView):
+class ChatCreate(LoginRequiredMixin, CreateView):
     
     model = Chat
     fields = ['text']
     template_name = "chat.html"
     
+    # чатаемся с участником кронференции, открываем его страницу из списка участников и пишем сообщение 
     def form_valid(self, form):
         form.instance.user_sent = User.objects.get(id=self.request.user.id)
         user_id = int(self.request.path.split('/')[3])
@@ -29,19 +30,19 @@ class ChatCreate(CreateView):
     def get_success_url(self):
         return reverse_lazy('conf:member_list')  
 
-class ChatList(ListView):
+
+
+class ChatList(LoginRequiredMixin, ListView):
     
     model = Chat
     context_object_name = 'chats'
     template_name = "chat_list.html"
     paginate_by = 5
-
+    
+    # содержимое чата конкретного участника на его персональной странице
     def get_context_data(self, **kwargs):
         context = super(ChatList, self).get_context_data(**kwargs)
-
         list_chat = Chat.objects.filter(user_receive_id = self.request.user.id)
-        print list_chat
-        print self.request.user.id
         page = self.request.GET.get('page')
         context['chats'] = my_pages(list_chat, self.paginate_by, page)
         return context

@@ -7,8 +7,11 @@
 
 <ul>
 
-{% for conference in conferences %}
-<li> <a title="Просмотреть" href= {% url "conf:conf_view" conference.id %}>{{conference.name}} , {{conference.place}}</a></li>
+{% for conf in conference %}
+<li> 
+<a title="Просмотреть" href= {% url "conf:conf_view" conf.id %}>{{conf.name}}, {{conf.place}}, 
+{{conf.date_begin}} - {{conf.date_end}}</a>
+</li>
 {% endfor %}
 
 </ul>

@@ -1,16 +1,13 @@
 # coding: utf-8
-from django.core.paginator          import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins     import LoginRequiredMixin
 from django.core.urlresolvers       import reverse_lazy, reverse
-from django                         import forms
 from django.utils.decorators        import method_decorator
 from django.views.generic.base      import TemplateView
 from django.views.generic           import ListView
 from django.views.generic.edit      import CreateView, UpdateView, DeleteView
 from django.views.generic.detail    import DetailView
 from django.shortcuts               import redirect
-from django.contrib.auth.decorators import login_required
-from datetime import datetime, timedelta, date, time 
+from datetime                       import datetime, timedelta, date, time 
 
 
 from models import Conference, MemberConference, Representer
@@ -21,38 +18,34 @@ from common.my_paginator import my_pages
 class ConfList(ListView):
     
     model = Conference
-    context_object_name = 'conferences'
+    context_object_name = 'conference'
     template_name = "conf_list.html"
     paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super(ConfList, self).get_context_data(**kwargs)
-        date = datetime.now()
-        date = date.date()-timedelta(days=3)
-        list_conf = Conference.objects.filter(date_end__gt=date)
+        list_conf = Conference.get_current_conf()
         page = self.request.GET.get('page')
-        context['conferences'] = my_pages(list_conf, self.paginate_by, page)
+        context['conference'] = my_pages(list_conf, self.paginate_by, page)
         return context
 
-class ConfArhivList(ListView):
+
+class ConfArhivList(LoginRequiredMixin, ListView):
     
     model = Conference
-    context_object_name = 'conferences'
+    context_object_name = 'conference'
     template_name = "conf_list.html"
     paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super(ConfArhivList, self).get_context_data(**kwargs)
-        date = datetime.now()
-        date = date.date()+timedelta(days=3)
-        list_conf = Conference.objects.filter(date_end__lt=date)
+        list_conf = Conference.get_arhiv_conf()
         page = self.request.GET.get('page')
-        context['conferences'] = my_pages(list_conf, self.paginate_by, page)
+        context['conference'] = my_pages(list_conf, self.paginate_by, page)
         return context
 
 
-
-class ConfCreate(CreateView):
+class ConfCreate(LoginRequiredMixin, CreateView):
     
     model = Conference
     fields = ['name', 
@@ -64,12 +57,9 @@ class ConfCreate(CreateView):
     template_name = "conf_add.html"
     context_object_name = 'conference'
    
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(NewsCreate, self).dispatch(*args, **kwargs)
 
 
-class ConfView(DetailView):
+class ConfView(LoginRequiredMixin, DetailView):
     
     model = Conference
     template_name = "conf_view.html"
@@ -80,7 +70,7 @@ class ConfView(DetailView):
         return context
 
 
-class ConfUpdate(UpdateView):
+class ConfUpdate(LoginRequiredMixin, UpdateView):
     
     model = Conference
     fields = ['name', 
@@ -92,25 +82,32 @@ class ConfUpdate(UpdateView):
     template_name = "conf_edit.html"
     context_object_name = 'conference'
      
-    #@method_decorator(login_required)
-    #def dispatch(self, *args, **kwargs):
-    #    return super(NewsUpdate, self).dispatch(*args, **kwargs)
 
-
-class ConfDelete(DeleteView):
+class ConfDelete(LoginRequiredMixin, DeleteView):
     
     model = Conference
+    def delete(self, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        try:
+            self.object.delete()
+        # исключение по связанным данным
+        except:
+            return redirect('conf:delete_fail')
+        
+        return redirect(self.get_success_url())
     
     def get_success_url(self):
-        return reverse_lazy('conf:news')    
+        return reverse_lazy('conf:conf')    
 
 
-class MemberCreate(CreateView):
+class MemberCreate(LoginRequiredMixin, CreateView):
     
     model = MemberConference
     fields = ['role']
     template_name = "member.html"
     
+    # регистрация на конференцию
     def form_valid(self, form):
         form.instance.member = User.objects.get(id=self.request.user.id)
         conference_id = int(self.request.path.split('/')[2])
@@ -119,6 +116,7 @@ class MemberCreate(CreateView):
         self.request.session['role'] = form.instance.role
         try:
             form.instance.save()
+            #исключение - уже зарегистрирован
         except:
             return redirect(reverse('conf:member_refuse'))                
         
@@ -139,39 +137,45 @@ class ConfirmView(TemplateView):
         context['role'] = self.request.session['role']
         context['member'] = User.objects.get(id=self.request.user.id) #спонсор или участник
         return context
+        #подтверждение регистрации с данными о регистрации
 
 
-class MemberList(ListView):
+class MemberList(LoginRequiredMixin, ListView):
     
     model = MemberConference
     context_object_name = 'members'
     template_name = "member_list.html"
     paginate_by = 5
-
+    
+    # участники конференций, все, хоть раз
     def get_context_data(self, **kwargs):
         context = super(MemberList, self).get_context_data(**kwargs)
         list_members = MemberConference.objects.distinct('member_id')
+        # distinct  только на Postgres, неповторяющиеся участники
         page = self.request.GET.get('page')
         context['members'] = my_pages(list_members, self.paginate_by, page)
         return context
 
-class MemberReporterList(ListView):
+
+
+class MemberReporterList(LoginRequiredMixin, ListView):
     
     model = MemberConference
     context_object_name = 'members'
     template_name = "member_reporter_list.html"
     paginate_by = 5
-
+    
+    # докладчики конференций, все, хоть раз
     def get_context_data(self, **kwargs):
         context = super(MemberReporterList, self).get_context_data(**kwargs)
         list_members = MemberConference.objects.filter(role = "reporter").distinct('member_id')
         page = self.request.GET.get('page')
         context['members'] = my_pages(list_members, self.paginate_by, page)
-        # if list_member will be without distinct
         return context
 
 
-class MemberView(DetailView):
+
+class MemberView(LoginRequiredMixin, DetailView):
     
     model = MemberConference
     template_name = "member_view.html"
@@ -181,53 +185,81 @@ class MemberView(DetailView):
         context = super(MemberView, self).get_context_data(**kwargs)
         return context
 
-class RepresenterCreate(CreateView):
+
+
+class RepresenterCreate(LoginRequiredMixin, CreateView):
     
     model = Representer
-    fields = '__all__'
+    fields = ['representer', 'sponsor']
     template_name = "member_view.html"
     
+    # назначить своим представителем, из списка докладчиков, только спонсор может
     def form_valid(self, form):
         representer_id = self.request.POST.get('reprs')
         form.instance.representer = User.objects.get(id=representer_id)
         form.instance.sponsor = self.request.user.id
-
+        
+        if self.request.user.role != 'sponsor':
+            return redirect(reverse('conf:only_sponsor'))     
+        
+        # не назначаем самого себя представителем самого себя 
         if  int(representer_id) == int(form.instance.sponsor):
             return redirect(reverse('conf:representer_already'))     
         try:
             form.instance.save()
         except:
+            # уже назначен вашим представителем
             return redirect(reverse('conf:representer_already'))                
-        
         return redirect(self.get_success_url())   
 
     def get_success_url(self):
         return reverse_lazy('conf:member_reporter_list')  
 
-class RepresenterList(ListView):
+
+
+class RepresenterList(LoginRequiredMixin, ListView):
     
     model = Representer
     context_object_name = 'representers'
     template_name = "representer_list.html"
     paginate_by = 5
-
+    
+    # список представителей текущего пользователя
     def get_context_data(self, **kwargs):
         context = super(RepresenterList, self).get_context_data(**kwargs)
         sponsor = User.objects.get(id=self.request.user.id).id
         list_members  =  Representer.objects.filter(sponsor = sponsor)
         page = self.request.GET.get('page')
         context['representers'] = my_pages(list_members, self.paginate_by, page)
-        #list_ == distinct
         return context
 
 
-class ConfMemberList(ListView):
+
+class RepresenterView(LoginRequiredMixin, DetailView):
+    
+    model = User
+    template_name = "reprs_view.html"
+    context_object_name = 'representer'
+
+    def get_context_data(self, **kwargs):
+        print self.request.GET
+        reprs_id = self.request.path.split('/')[2]
+        context = super(RepresenterView, self).get_context_data(**kwargs)
+        print reprs_id
+        representer = User.objects.get(id=reprs_id)
+        print representer
+        context['representer'] = representer
+        return context
+
+
+class ConfMemberList(LoginRequiredMixin, ListView):
     
     model = MemberConference
     context_object_name = 'members'
     template_name = "conf_detail_list.html"
     paginate_by = 5
-
+    
+    # участники конкретной конференции
     def get_context_data(self, **kwargs):
         context = super(ConfMemberList, self).get_context_data(**kwargs)
         conference_id = int(self.request.path.split('/')[2])
@@ -237,33 +269,37 @@ class ConfMemberList(ListView):
         context['conference_id'] = conference_id 
         return context
 
-class ConfSponsorList(ListView):
+
+
+class ConfSponsorList(LoginRequiredMixin, ListView):
     
     model = MemberConference
     context_object_name = 'members'
     template_name = "conf_detail_list.html"
     paginate_by = 5
-
+    
+    # спонсоры конкретной конференции 
     def get_context_data(self, **kwargs):
         context = super(ConfSponsorList, self).get_context_data(**kwargs)
         conference_id = int(self.request.path.split('/')[2])
         list_members = MemberConference.objects.filter(conference=conference_id)
         list_id_sponsor = [item.member_id for item in list_members]
         list_user_sponsor = User.objects.filter(id__in=list_id_sponsor, role='sponsor')
-        print list_user_sponsor
         page = self.request.GET.get('page')
         context['members'] = my_pages(list_user_sponsor, self.paginate_by, page)
         context['conference_id'] = conference_id 
         return context
 
 
-class ConfReporterList(ListView):
+
+class ConfReporterList(LoginRequiredMixin, ListView):
     
     model = MemberConference
     context_object_name = 'members'
     template_name =  "conf_detail_list.html"
     paginate_by = 5
-
+    
+    # докладчики конкретной конференции
     def get_context_data(self, **kwargs):
         context = super(ConfReporterList, self).get_context_data(**kwargs)
         conference_id = int(self.request.path.split('/')[2])

@@ -1,0 +1,18 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<h3>Представитель</h3>
+</div>
+<div>
+<img class="img-circle" width=40 height=40 src= {{ representer.photo.url }} >
+<p>{{ representer.first_name}}</p>
+<p>{{ representer.last_name }}</p>
+<p>{{ representer.role }}</p>
+
+
+
+<div>
+<a  href= {% url 'conf:reprs' %}> Назад </a></li>
+</div>
+
+{% endblock content %} 

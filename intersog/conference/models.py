@@ -1,12 +1,16 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
-from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings 
+from django.db      import models
+#from django.contrib.auth.models import User
+from django.conf    import settings 
+from datetime       import datetime, timedelta, date, time 
+from extuser.models import User
 
 class Conference(models.Model):
-
+    
+    ARCHIV_DAYS = 3
+    
     class Meta(object):
         verbose_name = u"Конференция"
         verbose_name_plural = u"Конференции"
@@ -54,6 +58,22 @@ class Conference(models.Model):
 
     def get_absolute_url(self):
         return u'/conf/{}'.format(self.id)   
+     
+    @classmethod       
+    def get_current_conf(cls):
+        date = datetime.now()
+        date = date.date()-timedelta(days = cls.ARCHIV_DAYS)
+        list_conf = cls.objects.filter(date_end__gt = date)
+        return list_conf
+    
+    @classmethod       
+    def get_arhiv_conf(cls):
+        date = datetime.now()
+        date = date.date()-timedelta(days = cls.ARCHIV_DAYS)
+        list_conf = cls.objects.filter(date_end__lt = date)
+        return list_conf
+    
+
 
 
 class MemberConference(models.Model):

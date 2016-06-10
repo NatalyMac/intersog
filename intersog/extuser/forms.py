@@ -13,7 +13,6 @@ class UserForm(RegistrationFormUniqueEmail):
         fields = [
             User.USERNAME_FIELD,
             'first_name',
-            'email',
             'password1',
             'password2',
         ]                     

@@ -1,0 +1,6 @@
+{% extends "base.html" %}  
+{% block content %} 
+<div>
+<div><p>Нельзя удалить конференцию, пока есть зарегистрированные участники </p></div>
+<a  href= {% url 'conf:conf' %}> Назад </a></li>
+{% endblock content %} 

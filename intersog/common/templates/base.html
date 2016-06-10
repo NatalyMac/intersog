@@ -14,15 +14,14 @@
 <a href = {% url "conf:conf_arhiv" %}> Архив конференций</a>
 <a href = {% url "blog:news" %}> Новости</a>
 
-<a href = {% url "conf:member_list" %}> Участники</a>
-<a href = {% url "conf:member_reporter_list" %}> Докладчики</a>
-<a href = {% url "conf:reprs" %}> Представители</a>
-<a href = {% url "user:user" %}> Пользователи</a>
+<a href = {% url "conf:member_list" %}> Участники все</a>
+<a href = {% url "conf:member_reporter_list" %}> Докладчики все</a>
+<a href = {% url "conf:reprs" %}> Представители мои</a>
 </div>
 
 {%if user.is_authenticated%}
 <div>
-<div><a href = {% url "user:profile_view"%}>Мой профиль {{profile}}</a></div>
+<div><a href = {% url "user:user_view" user.id %}>{{user.first_name}}</a></div>
 <a href = {% url "auth:auth_logout" %}> Выйти</a>
 </div>
 {%else%}

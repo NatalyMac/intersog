@@ -7,9 +7,9 @@
 <div>
 <ul>
 {% for representer in representers %}
-<li> <a title="Просмотреть" href= {% url "user:user_view" representer.representer.id %}>
+<li> <a title="Просмотреть" href= {% url "conf:reprs_view" representer.representer.id %}>
     <img class="img-circle" width=40 height=40 src= {{ representer.representer.photo.url }}>
-    {{representer.representer.first_name}} -- {{representer.representer.occupation}}
+    {{representer.representer.first_name}} -- {{representer.representer.occupation}}  {{representer.representer.id}}
 </a></li> 
  
 {% endfor %}
