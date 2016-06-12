@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'chat',
     'conference',
     'extuser',
+    'swampdragon',
+    'cuser'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -35,6 +37,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'cuser.middleware.CuserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -118,7 +121,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]  
+
 
 AUTH_USER_MODEL = 'extuser.User' 
 
@@ -132,4 +142,25 @@ LOGIN_REDIRECT_URL = '/conf/list'
 PASSWORD_RESET_TIMEOUT_DAYS = 3  
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')  
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
+
+#SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/data')
+#SWAMP_DRAGON_CONNECTION = ('chat.sockserver.DataConnection', '/data')
+SWAMP_DRAGON_CONNECTION = ('swampdragon_auth.socketconnection.HttpDataConnection', '/data')
+SWAMP_DRAGON_SESSION_STORE = 'intersog.chat.sessions.UserOnlyCustomSession'
+
+DRAGON_URL = 'http://localhost:9999/'
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)

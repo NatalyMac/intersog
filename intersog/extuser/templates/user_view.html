@@ -4,18 +4,13 @@
 <div>
 <h3>Профиль пользователя</h3>
 </div>
+
 <div>
-
-
 {% if user.photo %}
-<img class="img-circle" width=40 height=40 src= {{ user.photo.url }} >
-        
+    <img class="img-circle" width=40 height=40 src= {{ user.photo.url }} >
 {% else %}
-
-<img class="img-circle" src= {% static 'img/cat.png' %} height=40 width=40 />
-         
+    <img class="img-circle" src= {% static 'img/cat.png' %} height=40 width=40 />
 {% endif %}                            
-
 
 <p>{{ user.first_name }}</p>
 <p>{{ user.last_name }}</p>
@@ -25,10 +20,20 @@
 
 
 <div>
+<a  href= {% url 'chat:chat_user' %}> Вам писали</a></li>
+</div> 
+
+<div>
 <p> Я представитель таких компаний</p>
 
 {%for repr in reprs%}
-<img class="img-circle" width=40 height=40 src= {{ repr.photo.url }} >
+
+{% if repr.photo %}
+    <img class="img-circle" width=40 height=40 src= {{ repr.photo.url }} >
+{% else %}
+    <img class="img-circle" src= {% static 'img/cat.png' %} height=40 width=40>
+{% endif %}     
+
 {%endfor%}
 </div>
 
@@ -41,6 +46,7 @@
     {% csrf_token %}
 <input type="submit" value="удалить">
 </form>
+
 
 <div>
 <a  href= {% url 'home' %}> Назад </a></li>

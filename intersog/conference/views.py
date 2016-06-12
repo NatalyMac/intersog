@@ -1,5 +1,5 @@
 # coding: utf-8
-from django.contrib.auth.mixins     import LoginRequiredMixin
+#from django.contrib.auth.mixins     import LoginRequiredMixin
 from django.core.urlresolvers       import reverse_lazy, reverse
 from django.utils.decorators        import method_decorator
 from django.views.generic.base      import TemplateView
@@ -30,7 +30,7 @@ class ConfList(ListView):
         return context
 
 
-class ConfArhivList(LoginRequiredMixin, ListView):
+class ConfArhivList(ListView):
     
     model = Conference
     context_object_name = 'conference'
@@ -45,7 +45,7 @@ class ConfArhivList(LoginRequiredMixin, ListView):
         return context
 
 
-class ConfCreate(LoginRequiredMixin, CreateView):
+class ConfCreate(CreateView):
     
     model = Conference
     fields = ['name', 
@@ -59,7 +59,7 @@ class ConfCreate(LoginRequiredMixin, CreateView):
    
 
 
-class ConfView(LoginRequiredMixin, DetailView):
+class ConfView(DetailView):
     
     model = Conference
     template_name = "conf_view.html"
@@ -70,7 +70,7 @@ class ConfView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ConfUpdate(LoginRequiredMixin, UpdateView):
+class ConfUpdate(UpdateView):
     
     model = Conference
     fields = ['name', 
@@ -83,7 +83,7 @@ class ConfUpdate(LoginRequiredMixin, UpdateView):
     context_object_name = 'conference'
      
 
-class ConfDelete(LoginRequiredMixin, DeleteView):
+class ConfDelete(DeleteView):
     
     model = Conference
     def delete(self, *args, **kwargs):
@@ -101,7 +101,7 @@ class ConfDelete(LoginRequiredMixin, DeleteView):
         return reverse_lazy('conf:conf')    
 
 
-class MemberCreate(LoginRequiredMixin, CreateView):
+class MemberCreate(CreateView):
     
     model = MemberConference
     fields = ['role']
@@ -140,7 +140,7 @@ class ConfirmView(TemplateView):
         #подтверждение регистрации с данными о регистрации
 
 
-class MemberList(LoginRequiredMixin, ListView):
+class MemberList(ListView):
     
     model = MemberConference
     context_object_name = 'members'
@@ -158,7 +158,7 @@ class MemberList(LoginRequiredMixin, ListView):
 
 
 
-class MemberReporterList(LoginRequiredMixin, ListView):
+class MemberReporterList(ListView):
     
     model = MemberConference
     context_object_name = 'members'
@@ -175,7 +175,7 @@ class MemberReporterList(LoginRequiredMixin, ListView):
 
 
 
-class MemberView(LoginRequiredMixin, DetailView):
+class MemberView(DetailView):
     
     model = MemberConference
     template_name = "member_view.html"
@@ -187,7 +187,7 @@ class MemberView(LoginRequiredMixin, DetailView):
 
 
 
-class RepresenterCreate(LoginRequiredMixin, CreateView):
+class RepresenterCreate(CreateView):
     
     model = Representer
     fields = ['representer', 'sponsor']
@@ -217,7 +217,7 @@ class RepresenterCreate(LoginRequiredMixin, CreateView):
 
 
 
-class RepresenterList(LoginRequiredMixin, ListView):
+class RepresenterList(ListView):
     
     model = Representer
     context_object_name = 'representers'
@@ -235,7 +235,7 @@ class RepresenterList(LoginRequiredMixin, ListView):
 
 
 
-class RepresenterView(LoginRequiredMixin, DetailView):
+class RepresenterView(DetailView):
     
     model = User
     template_name = "reprs_view.html"
@@ -252,7 +252,7 @@ class RepresenterView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ConfMemberList(LoginRequiredMixin, ListView):
+class ConfMemberList(ListView):
     
     model = MemberConference
     context_object_name = 'members'
@@ -271,7 +271,7 @@ class ConfMemberList(LoginRequiredMixin, ListView):
 
 
 
-class ConfSponsorList(LoginRequiredMixin, ListView):
+class ConfSponsorList(ListView):
     
     model = MemberConference
     context_object_name = 'members'
@@ -292,7 +292,7 @@ class ConfSponsorList(LoginRequiredMixin, ListView):
 
 
 
-class ConfReporterList(LoginRequiredMixin, ListView):
+class ConfReporterList(ListView):
     
     model = MemberConference
     context_object_name = 'members'

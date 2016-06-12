@@ -8,6 +8,8 @@ from .settings import MEDIA_ROOT, DEBUG
 from extuser.forms import UserForm
 
 
+#admin.autodiscover()
+
 urlpatterns = [
     
     url(r'^$', TemplateView.as_view(template_name='base.html'), name='home'),

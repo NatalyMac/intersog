@@ -1,15 +1,47 @@
-{% extends "base.html" %}  
-{% block content %} 
+{% extends 'bootstrap_base.html' %}
 
+{% block main_content %}
 
-<form action="" method="post">
-   
-    {% csrf_token %}
-   
-    {{ form.as_p }} 
+{{user.first_name}}
 
-<input type="hidden" name="reprs" value = "{{member.member.id}}">
-<input type="submit" value="Отправить">
-</form>
-</div>
-{% endblock content %}
+{{receiver.first_name}}
+
+    <div class="col-md-6">
+
+            <div class="panel"> {{user.first_name}} </div>
+            
+            <div class="panel panel-primary">
+            <div class="panel-heading"  autofocus="true"> {{receiver.first_name}} </div>
+            
+            <div class="panel-body">
+            
+            <ul class="list-group">
+            <li class="list-group-item" id="messages"></li>
+             </ul>
+
+            <form method="post" class="form">
+
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="message" id="message" autofocus="true">
+            </div>
+
+                <input type="hidden" class="form-control" value={{user.id}} id="user_sent">
+                <input type="hidden" class="form-control" value={{user.first_name}} id="name">
+                <input type="hidden" class="form-control" value={{receiver.id}} id="user">
+
+            <div class="form-group">
+                <button type="button" class="btn btn-primary navbar-right" id="send-message-button">chat</button>
+            </div>
+
+            <div>
+                <span id="error-name"></span>
+            </div>
+            <div>
+                <span id="error-message"></span>
+            </div>
+          </form>
+        
+        </div>
+        
+    </div>
+{% endblock main_content %}

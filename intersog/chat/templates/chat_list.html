@@ -8,13 +8,13 @@
 <div>
 <ul>
 {% for chat in chats %}
-<li>{{chat.text}}</a></li> 
+<li>{{chat.text}} {{chat.user_sent.first_name}}</a></li> 
 {% endfor %}
 </ul>
 </div>
 
 <div>
-<a  href= {% url 'home' %}> Назад </a>
+<a  href= {% url 'user:user_view' user.id %}> Назад </a>
 </div>
 {% include 'paginator.html' %} 
 {% endblock content %} 

@@ -1,5 +1,5 @@
 # coding: utf-8
-from django.contrib.auth.mixins     import LoginRequiredMixin
+#from django.contrib.auth.mixins     import LoginRequiredMixin
 from django.core.paginator          import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic           import ListView
 from django.views.generic.edit      import CreateView, UpdateView, DeleteView
@@ -11,7 +11,9 @@ from common.my_paginator            import my_pages
 
 from models import News
 
-class NewsList(LoginRequiredMixin, ListView):
+
+# LoginRequiredMixin
+class NewsList(ListView):
     model = News
     context_object_name = 'news'
     template_name = "news_list.html"
@@ -26,7 +28,7 @@ class NewsList(LoginRequiredMixin, ListView):
         return context
 
 
-class NewsCreate(LoginRequiredMixin, CreateView):
+class NewsCreate(CreateView):
     model = News
     fields = ['title', 
               'text']
@@ -36,7 +38,7 @@ class NewsCreate(LoginRequiredMixin, CreateView):
     #def dispatch(self, *args, **kwargs):
     #    return super(NewsCreate, self).dispatch(*args, **kwargs)
 
-class NewsView(LoginRequiredMixin, DetailView):
+class NewsView(DetailView):
     model = News
     template_name = "news_view.html"
     context_object_name = 'news'
@@ -45,7 +47,7 @@ class NewsView(LoginRequiredMixin, DetailView):
         context = super(NewsView, self).get_context_data(**kwargs)
         return context
 
-class NewsUpdate(LoginRequiredMixin, UpdateView):
+class NewsUpdate(UpdateView):
     model = News
     fields = ['title', 
               'text']
@@ -56,7 +58,7 @@ class NewsUpdate(LoginRequiredMixin, UpdateView):
     #def dispatch(self, *args, **kwargs):
     #    return super(NewsUpdate, self).dispatch(*args, **kwargs)
 
-class NewsDelete(LoginRequiredMixin, DeleteView):
+class NewsDelete(DeleteView):
     model = News
     
     def get_success_url(self):

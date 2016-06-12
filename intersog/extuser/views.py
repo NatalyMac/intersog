@@ -2,7 +2,7 @@
 from django.views.generic.edit      import UpdateView, DeleteView
 from django.views.generic.detail    import DetailView
 from django.core.urlresolvers       import reverse_lazy 
-from django.contrib.auth.mixins     import LoginRequiredMixin
+#from django.contrib.auth.mixins     import LoginRequiredMixin
 
 from models import User
 from conference.models import Representer
@@ -10,7 +10,7 @@ from common.my_paginator import my_pages
 
 
 # операции со своим профилем
-class UserView(LoginRequiredMixin, DetailView):
+class UserView(DetailView):
     model = User
     fields = ['first_name',
               'last_name',
@@ -31,7 +31,7 @@ class UserView(LoginRequiredMixin, DetailView):
     
 
 
-class UserUpdate(LoginRequiredMixin, UpdateView):
+class UserUpdate(UpdateView):
     model = User
     fields = ['first_name',
               'last_name',
@@ -45,7 +45,7 @@ class UserUpdate(LoginRequiredMixin, UpdateView):
 
 
 
-class UserDelete(LoginRequiredMixin, DeleteView):
+class UserDelete(DeleteView):
     model = User
     
     def get_success_url(self):

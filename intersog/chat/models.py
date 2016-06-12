@@ -2,13 +2,18 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
+from swampdragon.models import SelfPublishModel
+from .serializer import ChatSerializer
 
-class Chat(models.Model):
+
+class Chat(SelfPublishModel, models.Model):
 
     class Meta(object):
         verbose_name = u"Чат"
         verbose_name_plural = u"Чат"
     
+    serializer_class = ChatSerializer
+
     user_sent = models.ForeignKey(settings.AUTH_USER_MODEL,
         blank=True)
 
@@ -26,4 +31,6 @@ class Chat(models.Model):
         verbose_name=u"Дата создания")
 
     def __unicode__(self):
-        return '{}'.format(self.text)       
+        return '{}'.format(self.text)      
+
+
