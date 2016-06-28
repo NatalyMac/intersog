@@ -1,2 +1,3 @@
 *.pyc
 intersog/intersog/settings.py
+intersog/intersog/settings_nginx.py
